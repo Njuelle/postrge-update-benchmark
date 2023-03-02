@@ -7,7 +7,7 @@ const { numberOfInsert, numberOfUpdate } = require("minimist")(
 
 async function main() {
   if (numberOfUpdate > numberOfInsert) {
-    console.log("❌ Number of update is higher than the number of insert.");
+    console.log("❌ The number of update is higher than the number of insert.");
     return;
   }
 
