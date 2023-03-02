@@ -8,5 +8,6 @@ A tiny Node.js project to benchmark postgreSQL many update queries VS one big up
 - `docker-compose up`
 
 ## Usage
-
-`yarn run start --numberOfInserts=<number> --numberOfUpdates=<number>`
+```
+yarn run start --numberOfInserts=<number> --numberOfUpdates=<number>
+```
