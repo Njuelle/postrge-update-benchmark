@@ -1,12 +1,22 @@
 const { insertFakeData, runManyUpdates, runOneUpdate } = require("./lib");
 const { Client } = require("pg");
 
-const { numberOfInsert, numberOfUpdate } = require("minimist")(
+const { numberOfInserts, numberOfUpdates } = require("minimist")(
   process.argv.slice(2)
 );
 
 async function main() {
-  if (numberOfUpdate > numberOfInsert) {
+  if (!numberOfInserts || typeof numberOfInserts !== "number") {
+    console.log("❌ Wrong or missing --numberOfInserts arg");
+    return;
+  }
+
+  if (!numberOfUpdates || typeof numberOfUpdates !== "number") {
+    console.log("❌ Wrong or missing --numberOfUpdates arg");
+    return;
+  }
+
+  if (numberOfUpdates > numberOfInserts) {
     console.log("❌ The number of update is higher than the number of insert.");
     return;
   }
@@ -22,23 +32,23 @@ async function main() {
 
   console.log("⌛ Start inserting fake data...");
 
-  await insertFakeData(client, numberOfInsert);
+  await insertFakeData(client, numberOfInserts);
 
-  console.log(`✔️ ${numberOfInsert} rows inserted.`);
+  console.log(`✔️ ${numberOfInserts} rows inserted.`);
 
   console.log("⌛ Running many updates queries...");
-  console.time(`✔️ ${numberOfUpdate} updates with many queries in`);
+  console.time(`✔️ ${numberOfUpdates} updates with many queries in`);
 
-  await runManyUpdates(client, numberOfUpdate);
+  await runManyUpdates(client, numberOfUpdates);
 
-  console.timeEnd(`✔️ ${numberOfUpdate} updates with many queries in`);
+  console.timeEnd(`✔️ ${numberOfUpdates} updates with many queries in`);
 
   console.log("⌛ Running with one update query...");
-  console.time(`✔️ ${numberOfUpdate} updates with one query in`);
+  console.time(`✔️ ${numberOfUpdates} updates with one query in`);
 
-  await runOneUpdate(client, numberOfUpdate);
+  await runOneUpdate(client, numberOfUpdates);
 
-  console.timeEnd(`✔️ ${numberOfUpdate} updates with one query in`);
+  console.timeEnd(`✔️ ${numberOfUpdates} updates with one query in`);
 
   await client.end();
 }
