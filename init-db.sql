@@ -1,1 +1,1 @@
-CREATE TABLE IF NOT EXISTS foobar (id integer, foo varchar(255), bar varchar(255), baz varchar(255));
+CREATE TABLE IF NOT EXISTS foobar (id integer PRIMARY KEY, foo varchar(255), bar varchar(255), baz varchar(255));
