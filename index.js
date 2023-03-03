@@ -1,4 +1,8 @@
-const { insertFakeData, runManyUpdates, runOneUpdate } = require("./lib");
+const {
+  buildInsertsQuery,
+  buildManyUpdateQueries,
+  buildOneUpdateQuery,
+} = require("./lib");
 const { Client } = require("pg");
 
 const { numberOfInserts, numberOfUpdates } = require("minimist")(
@@ -31,23 +35,21 @@ async function main() {
   await client.query("TRUNCATE TABLE  foobar;");
 
   console.log("⌛ Start inserting fake data...");
-
-  await insertFakeData(client, numberOfInserts);
-
+  await client.query(buildInsertsQuery(numberOfInserts));
   console.log(`✔️ ${numberOfInserts} rows inserted.`);
 
   console.log("⌛ Running many updates queries...");
+  const manyUpdatesQueries = buildManyUpdateQueries(numberOfUpdates);
+
   console.time(`✔️ ${numberOfUpdates} updates with many queries in`);
-
-  await runManyUpdates(client, numberOfUpdates);
-
+  await client.query(manyUpdatesQueries);
   console.timeEnd(`✔️ ${numberOfUpdates} updates with many queries in`);
 
   console.log("⌛ Running with one update query...");
+  const oneUpdateQuery = buildOneUpdateQuery(numberOfUpdates);
+
   console.time(`✔️ ${numberOfUpdates} updates with one query in`);
-
-  await runOneUpdate(client, numberOfUpdates);
-
+  await client.query(oneUpdateQuery);
   console.timeEnd(`✔️ ${numberOfUpdates} updates with one query in`);
 
   await client.end();

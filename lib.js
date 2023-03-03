@@ -1,24 +1,29 @@
 const randomString = () => (Math.random() + 1).toString(36).substring(2);
 
-const insertFakeData = async (client, numberOfInserts) => {
+const buildInsertsQuery = (numberOfInserts) => {
+  const inserts = [];
+
   for (let i = 0; i < numberOfInserts; i++) {
-    await client.query(
-      "INSERT INTO foobar (id, foo, bar, baz) VALUES ($1, $2, $3, $4)",
-      [i, randomString(), randomString(), randomString()]
+    inserts.push(
+      `INSERT INTO foobar (id, foo, bar, baz) VALUES (${i}, '${randomString()}', '${randomString()}', '${randomString()}')`
     );
   }
+
+  return inserts.join(";");
 };
 
-const runManyUpdates = async (client, numberOfUpdates) => {
+const buildManyUpdateQueries = (numberOfUpdates) => {
+  const updates = [];
   for (let i = 0; i < numberOfUpdates; i++) {
-    await client.query(
-      "UPDATE foobar SET foo = $1, bar = $2, baz = $3 WHERE id = $4",
-      [randomString(), randomString(), randomString(), i]
+    updates.push(
+      `UPDATE foobar SET foo = '${randomString()}', bar = '${randomString()}', baz = '${randomString()}' WHERE id = ${i}`
     );
   }
+
+  return updates.join(";");
 };
 
-const runOneUpdate = async (client, numberOfUpdates) => {
+const buildOneUpdateQuery = (numberOfUpdates) => {
   const whenClause = [];
   const ids = [];
 
@@ -27,7 +32,7 @@ const runOneUpdate = async (client, numberOfUpdates) => {
     ids.push(i);
   }
 
-  const query = `
+  return `
     UPDATE foobar
     SET foo =
       CASE
@@ -43,12 +48,10 @@ const runOneUpdate = async (client, numberOfUpdates) => {
       END
     WHERE id IN (${ids.join(",")});
   `;
-
-  await client.query(query);
 };
 
 module.exports = {
-  insertFakeData,
-  runManyUpdates,
-  runOneUpdate,
+  buildInsertsQuery,
+  buildManyUpdateQueries,
+  buildOneUpdateQuery,
 };
