@@ -14,6 +14,7 @@ const buildInsertsQuery = (numberOfInserts) => {
 
 const buildManyUpdateQueries = (numberOfUpdates) => {
   const updates = [];
+  
   for (let i = 0; i < numberOfUpdates; i++) {
     updates.push(
       `UPDATE foobar SET foo = '${randomString()}', bar = '${randomString()}', baz = '${randomString()}' WHERE id = ${i}`
